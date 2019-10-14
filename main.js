@@ -13,13 +13,30 @@ app.get("/", (req, res) => {
 });
 
 app.post("/" , (req, res) => {
-  console.log(req.body.crypto);
 
-  request("https://apiv2.bitcoinaverage.com/indices/global/ticker/" + req.body.crypto + req.body.fiat, (e, res, body) =>{
-    console.log("Body: " + body);
+  var crypto = req.body.crypto;
+  var fiat = req.body.fiat;
+  var amount = req.body.amount;
+
+  var options = {
+    url: "https://apiv2.bitcoinaverage.com/convert/global",
+    method: "GET",
+    qs: {
+      from: crypto,
+      to: fiat,
+      amount: amount
+    }
+  }
+
+  request(options, (error, response, body) => {
     console.log(body);
+
     var obj = JSON.parse(body);
-    console.log(obj.last);
+    var price = obj.price;
+
+    res.write("<h1> HELOOOOO </h1>")
+    res.write("Price is: " + price);
+    res.send();
   });
 });
 
